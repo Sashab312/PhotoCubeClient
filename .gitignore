@@ -546,6 +546,9 @@ dmypy.json
 .history
 .ionide
 
+# Jetbrains IDE - WebStorm
+/.idea
+
 ### VisualStudio ###
 
 # User-specific files
