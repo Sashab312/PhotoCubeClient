@@ -3,18 +3,18 @@
  */
 
 import redux from "@reduxjs/toolkit"
-import {filterReducer} from "./reducers/filter-reducer";
+import {filterDepartmentReducer} from "./reducers/filter-reducer";
 
 
-const store = redux.configureStore(
+const photoCubeStore = redux.configureStore(
     {
-        // Register the reducers with the store.
+        // Register reducers with the store.
         reducer: redux.combineReducers(
             {
-                "filterDepartment": filterReducer,
+                "filterDepartment": filterDepartmentReducer,
             }
         )
     }
 )
 
-export default store
+export default photoCubeStore
