@@ -1,0 +1,1 @@
+export const LOGGER: Console = console
