@@ -2,10 +2,10 @@
  * This module contains the filter reducer.
  */
 
-import {IAction, IFilterDepartment} from "../interfaces";
-import {ActionTypes} from "../actions/filter-actions";
+import {IFilterAction, IFilterDepartment} from "../interfaces";
+import {FilterActions} from "../actions/filter-actions";
 import {FilterTypes} from "../../enums";
-import {LOGGER} from "../../utils/logger";
+import {IFilter} from "../../interfaces";
 
 
 // Filter department of the Redux store.
@@ -16,9 +16,9 @@ const FILTER_DEPARTMENT: IFilterDepartment = {} as IFilterDepartment
  * @param department The department to extend
  * @param action The action containing the filter to be added
  */
-const addFilterToDepartment = (
+const _addFilterToDepartment = (
     department: IFilterDepartment,
-    action: IAction
+    action: IFilterAction
 ): IFilterDepartment => {
 
     // Deduce the type of the filter to add.
@@ -35,14 +35,12 @@ const addFilterToDepartment = (
 
         // Add a tagset filter to the department.
         case FilterTypes.TagsetFilter:
-            const reModeledDepartment = {
+            return {
                 ...department,
                 tagsets: department
                     .tagsets
                     .add(action.filter)
             }
-            LOGGER.debug(reModeledDepartment)
-            return reModeledDepartment
 
         // Add a hierarchy filter to the department.
         case FilterTypes.HierarchyFilter:
@@ -55,13 +53,6 @@ const addFilterToDepartment = (
 
         // Action did not contain a legal filter type.
         default:
-            LOGGER.warn(
-                "FilterType "
-                + `${action.filter?.filterType} `
-                + "not recognised; "
-                + "Proceeding without changes to the store"
-            )
-            LOGGER.groupEnd()
             return department
     }
 }
@@ -71,9 +62,9 @@ const addFilterToDepartment = (
  * @param department The department to remove a filter from
  * @param action The action containing the filter to be removed
  */
-const removeFilterFromDepartment = (
+const _removeFilterFromDepartment = (
     department: IFilterDepartment,
-    action: IAction
+    action: IFilterAction
 ): IFilterDepartment => {
 
     // Deduce the type of the filter to remove.
@@ -81,96 +72,51 @@ const removeFilterFromDepartment = (
 
         // Remove a tag filter from the department.
         case FilterTypes.TagFilter:
-            if (department.tags.delete(action.filter))
-                LOGGER.debug(
-                    `Filter '${action.filter.name}' `
-                    + "was removed from tag filters"
-                )
-            else
-                LOGGER.warn(
-                    `Filter '${action.filter}' `
-                    + "was not removed from tag filters"
-                )
-
+            department.tags.delete(action.filter)
             return {
                 ...department,
             }
 
         // Remove a tagset filter from the department.
         case FilterTypes.TagsetFilter:
-            if (department.tagsets.delete(action.filter))
-                LOGGER.debug(
-                    `Filter '${action.filter.name}' `
-                    + "was removed from tagset filters"
-                )
-            else
-                LOGGER.warn(
-                    `Filter '${action.filter}' `
-                    + "was not removed from tagset filters"
-                )
-
+            department.tagsets.delete(action.filter)
             return {
                 ...department,
             }
 
         // Remove a hierarchy filter from the department.
         case FilterTypes.HierarchyFilter:
-            if (department.hierarchies.delete(action.filter))
-                LOGGER.debug(
-                    `Filter '${action.filter.name}' `
-                    + "was removed from hierarchy filters"
-                )
-            else
-                LOGGER.warn(
-                    `Filter '${action.filter}' `
-                    + "was not removed from hierarchy filters"
-                )
-
+            department.hierarchies.delete(action.filter)
             return {
                 ...department,
             }
 
         // Action did not contain a legal filter type.
         default:
-            LOGGER.warn(
-                "FilterType "
-                + `${action.filter?.filterType} `
-                + "not recognised; "
-                + "Proceeding without changes to the store"
-            )
-            LOGGER.groupEnd()
             return department
     }
 }
 
-export const filterDepartmentReducer = (
+const filterDepartmentReducer = (
     department: IFilterDepartment = FILTER_DEPARTMENT,
-    action: IAction
+    action: IFilterAction
 ): IFilterDepartment => {
-
-    // Open a log group.
-    LOGGER.group("FilterReducer")
 
     // Deduce reducer operation.
     switch (action.type) {
 
-        // Adding a filter.
-        case ActionTypes.FILTER_ADDED:
-            return addFilterToDepartment(department, action)
+        // Add a filter.
+        case FilterActions.FILTER_ADDED:
+            return _addFilterToDepartment(department, action)
 
-        // Removing a filter.
-        case ActionTypes.FILTER_REMOVED:
-            return removeFilterFromDepartment(department, action)
+        // Remove a filter.
+        case FilterActions.FILTER_REMOVED:
+            return _removeFilterFromDepartment(department, action)
 
         // Unknown action type.
         default:
-            LOGGER.warn(
-                "ActionType "
-                + `${action.type} `
-                + "not recognised; "
-                + "Proceeding without changes to the store"
-            )
-            LOGGER.groupEnd()
             return department
     }
 }
+
+export default filterDepartmentReducer

@@ -1,26 +1,27 @@
 /**
- * This module contains actions for the filter store.
+ * This module contains actions for the filter department.
  */
 
 import {IFilter} from "../../interfaces";
-import {IAction} from "../interfaces";
+import {IFilterAction} from "../interfaces";
+import {FilterActions} from "../enums";
 
-// Action types.
-export enum ActionTypes {
-    FILTER_ADDED = "FILTER_ADDED",
-    FILTER_REMOVED = "FILTER_REMOVED"
-}
 
-export const addFilter = (filter: IFilter): IAction => {
+const addFilter = (filter: IFilter): IFilterAction => {
     return {
-        type: ActionTypes.FILTER_ADDED,
+        type: FilterActions.FILTER_ADDED,
         filter: filter
     }
 }
 
-export const removeFilter = (filter: IFilter): IAction => {
+const applyFilters = () => {
+}
+
+const removeFilter = (filter: IFilter): IFilterAction => {
     return {
-        type: ActionTypes.FILTER_REMOVED,
+        type: FilterActions.FILTER_REMOVED,
         filter: filter
     }
 }
+const actions = {addFilter, applyFilters, removeFilter}
+export default actions

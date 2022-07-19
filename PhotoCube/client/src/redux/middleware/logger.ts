@@ -3,7 +3,7 @@
  * https://www.npmjs.com/package/redux-logger
  */
 
-export const logger = require("redux-logger")
+export const Logger = require("redux-logger")
     .createLogger(
         {
             collapsed: true,

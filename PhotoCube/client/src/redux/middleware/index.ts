@@ -4,4 +4,4 @@
 
 
 
-export {logger} from "./logger"
+export {Logger} from "./logger"

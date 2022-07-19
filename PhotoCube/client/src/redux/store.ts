@@ -2,10 +2,12 @@
  * This module contains the Redux store configurations.
  */
 
-import {addFilter, removeFilter} from "./actions/filter-actions"
+import FilterActions from "./actions/filter-actions"
 import redux from "@reduxjs/toolkit"
 import filterDepartmentReducer from "./reducers/filter-reducer";
-import {logger} from "./middleware";
+import browsingStateDepartmentReducer from "./reducers/browsing-state-reducer";
+import {Logger} from "./middleware";
+import Thunk from "redux-thunk"
 
 // The Redux store.
 const photoCubeStore = redux.configureStore(
@@ -14,13 +16,15 @@ const photoCubeStore = redux.configureStore(
         reducer: redux.combineReducers(
             {
                 "filterDepartment": filterDepartmentReducer,
+                "browsingStateDepartment": browsingStateDepartmentReducer
             }
         ),
 
         // Register middleware with the store.
         middleware: (getDefaultMiddleware) => {
             return getDefaultMiddleware()
-                .concat(logger)
+                .concat(Logger)
+                .concat(Thunk)
         }
     }
 )
@@ -29,13 +33,7 @@ const photoCubeStore = redux.configureStore(
 // Register actions available for dispatching.
 const DispatchActions = redux.bindActionCreators(
     {
-        // Filter actions.
-        addFilter,
-        removeFilter,
-
-        // Settings actions.
-
-        // Browsing state actions.
+        ...FilterActions
     },
     photoCubeStore.dispatch
 )
